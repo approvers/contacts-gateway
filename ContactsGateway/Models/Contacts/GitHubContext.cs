@@ -6,7 +6,6 @@
 
         public GitHubContact() : base()
         {
-            
         }
         
         public GitHubContact(ulong id, string name, string login, string url) : base(id, name, url)
