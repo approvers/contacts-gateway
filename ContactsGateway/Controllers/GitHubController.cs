@@ -26,7 +26,7 @@ namespace ContactsGateway.Controllers
             {
                 return Json(await _fetcher.FetchAsync(id));
             }
-            catch (ContactNotFoundException<GitHubContact> _)
+            catch (ContactNotFoundException<GitHubContact>)
             {
                 return NotFound();
             }

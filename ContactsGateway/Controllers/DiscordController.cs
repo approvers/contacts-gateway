@@ -25,7 +25,7 @@ namespace ContactsGateway.Controllers
             {
                 return Json(await _fetcher.FetchAsync(id));
             }
-            catch (ContactNotFoundException<DiscordContact> _)
+            catch (ContactNotFoundException<DiscordContact>)
             {
                 return NotFound();
             }
