@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ContactsGateway.Exceptions;
 using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Clients;
 
@@ -16,6 +17,11 @@ namespace ContactsGateway.Services.Fetchers
         public async Task<DiscordContact> FetchAsync(ulong id)
         {
             var user = await _client.GetUserAsync(id);
+
+            if (user is null)
+            {
+                throw new ContactNotFoundException<DiscordContact>(null);
+            }
 
             return new DiscordContact(
                 user.Id,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -25,25 +26,42 @@ namespace ContactsGateway.Services.Clients
 
         public async Task<T> GetAsync<T>(string url)
         {
-            var message = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(BASE_URL + url),
-                Headers =
+            var response = await _httpClient.SendAsync(
+                new HttpRequestMessage
                 {
-                    { "User-Agent", "Contacts-Gateway" },
-                    { "Authorization", $"Bearer {_token}" }
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(BASE_URL + url),
+                    Headers =
+                    {
+                        { "User-Agent", "Contacts-Gateway" },
+                        { "Authorization", $"Bearer {_token}" }
+                    }
                 }
-            };
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new GitHubException(response);
+            }
             
             return JsonConvert.DeserializeObject<T>(
-                await (await _httpClient.SendAsync(message)).Content.ReadAsStringAsync()
+                await response.Content.ReadAsStringAsync()
             );
         }
 
         public void Dispose()
         {
             _httpClient.Dispose();
+        }
+    }
+    
+    public class GitHubException : Exception
+    {
+        public HttpResponseMessage Response { get; }
+
+        public GitHubException(HttpResponseMessage response) : base("An error occured on GitHub API.")
+        {
+            Response = response;
         }
     }
 }

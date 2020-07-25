@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using ContactsGateway.Exceptions;
 using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Clients;
 
@@ -13,9 +16,21 @@ namespace ContactsGateway.Services.Fetchers
             _client = client;
         }
         
-        public Task<GitHubContact> FetchAsync(ulong id)
+        public async Task<GitHubContact> FetchAsync(ulong id)
         {
-            return _client.GetAsync<GitHubContact>($"user/{id}");
+            try
+            {
+                return await _client.GetAsync<GitHubContact>($"user/{id}");
+            }
+            catch (GitHubException e)
+            {
+                if (e.Response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new ContactNotFoundException<GitHubContact>(e);
+                }
+                
+                throw;
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using ContactsGateway.Exceptions;
 using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Fetchers;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +20,16 @@ namespace ContactsGateway.Controllers
         
         [HttpGet]
         [Route("{id}")]
-        public Task<GitHubContact> Get(ulong id)
+        public async Task<IActionResult> Get(ulong id)
         {
-            return _fetcher.FetchAsync(id);
+            try
+            {
+                return Json(await _fetcher.FetchAsync(id));
+            }
+            catch (ContactNotFoundException<GitHubContact> _)
+            {
+                return NotFound();
+            }
         }
     }
 }
