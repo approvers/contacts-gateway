@@ -2,8 +2,8 @@
 {
     public interface IContact
     {
-        public ulong Id { get; set; }
-        public string Name { get; set; }
-        public string Url { get; set; }
+        ulong Id { get; set; }
+        string Name { get; set; }
+        string Url { get; set; }
     }
 }

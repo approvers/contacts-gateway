@@ -4,6 +4,6 @@ namespace ContactsGateway.Services.Fetchers
 {
     public interface IFetcher<T>
     {
-        public Task<T> FetchAsync(ulong id);
+        Task<T> FetchAsync(ulong id);
     }
 }
