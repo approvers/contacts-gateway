@@ -6,9 +6,9 @@ namespace ContactsGateway.Services.Fetchers
 {
     public class GitHubFetcher : IFetcher<GitHubContact>
     {
-        private readonly GitHubClient _client;
+        private readonly IGitHubClient _client;
         
-        public GitHubFetcher(GitHubClient client)
+        public GitHubFetcher(IGitHubClient client)
         {
             _client = client;
         }

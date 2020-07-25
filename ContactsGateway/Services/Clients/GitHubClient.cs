@@ -5,7 +5,12 @@ using Newtonsoft.Json;
 
 namespace ContactsGateway.Services.Clients
 {
-    public class GitHubClient
+    public interface IGitHubClient
+    {
+        Task<T> GetAsync<T>(string url);
+    }
+    
+    public class GitHubClient : IGitHubClient
     {
         private const string BASE_URL = "https://api.github.com/";
         

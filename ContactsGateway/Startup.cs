@@ -45,7 +45,7 @@ namespace ContactsGateway
                 Configuration["Twitter:ConsumerSecret"]
             ));
 
-            services.AddScoped(provider => new GitHubClient(
+            services.AddScoped<IGitHubClient>(provider => new GitHubClient(
                 new HttpClient(),
                 Configuration["GitHub:Token"]
             ));
