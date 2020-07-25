@@ -1,34 +1,24 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ContactsGateway.Models.Contacts;
-using CoreTweet;
+using ContactsGateway.Services.Clients;
 
 namespace ContactsGateway.Services.Fetchers
 {
     public class TwitterFetcher : IFetcher<TwitterContact>
     {
-        private readonly OAuth2Token _token;
+        private readonly ITwitterClient _client;
         
-        public TwitterFetcher(OAuth2Token token)
+        public TwitterFetcher(ITwitterClient client)
         {
-            _token = token;
+            _client = client;
         }
         
         public async Task<TwitterContact> FetchAsync(ulong id)
         {
-            if (id > long.MaxValue)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(id),
-                    "Twitter ID must be in range of long."
-                );
-            }
-
-            var userId = (long) id;
-            var user = await _token.Users.ShowAsync(userId);
+            var user = await _client.GetUserAsync(id);
             
             return new TwitterContact(
-                (ulong) user.Id.GetValueOrDefault(userId),
+                ((ulong?) user.Id).GetValueOrDefault(id),
                 user.Name,
                 user.ScreenName,
                 $"https://twitter.com/{user.ScreenName}"

@@ -40,9 +40,11 @@ namespace ContactsGateway
         {
             services.AddControllers();
 
-            services.AddScoped(provider => OAuth2.GetToken(
-                Configuration["Twitter:ConsumerKey"],
-                Configuration["Twitter:ConsumerSecret"]
+            services.AddScoped<ITwitterClient>(provider => new TwitterClient(
+                OAuth2.GetToken(
+                    Configuration["Twitter:ConsumerKey"],
+                    Configuration["Twitter:ConsumerSecret"]
+                )
             ));
 
             services.AddScoped<IGitHubClient>(provider => new GitHubClient(
