@@ -2,7 +2,7 @@
 {
     public class DiscordContact : ContactBase
     {
-        public string Tag { get; set; }
+        public string Tag { get; }
 
         public DiscordContact(ulong id, string name, string tag, string url) : base(id, name, url)
         {
