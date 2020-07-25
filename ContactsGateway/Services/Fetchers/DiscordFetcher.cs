@@ -1,15 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ContactsGateway.Models.Contacts;
-using Discord.Rest;
+using ContactsGateway.Services.Clients;
 
 namespace ContactsGateway.Services.Fetchers
 {
     public class DiscordFetcher : IFetcher<DiscordContact>
     {
-        private readonly DiscordRestClient _client;
+        private readonly IDiscordClient _client;
         
-        public DiscordFetcher(DiscordRestClient client)
+        public DiscordFetcher(IDiscordClient client)
         {
             _client = client;
         }

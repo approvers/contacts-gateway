@@ -7,7 +7,6 @@ using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Clients;
 using ContactsGateway.Services.Fetchers;
 using CoreTweet;
-using Discord;
 using Discord.Rest;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -52,15 +51,15 @@ namespace ContactsGateway
                 Configuration["GitHub:Token"]
             ));
 
-            services.AddScoped(provider =>
+            services.AddScoped<IDiscordClient>(provider =>
             {
                 var client = new DiscordRestClient();
 
                 client
-                    .LoginAsync(TokenType.Bot, Configuration["Discord:Token"])
+                    .LoginAsync(Discord.TokenType.Bot, Configuration["Discord:Token"])
                     .Wait();
 
-                return client;
+                return new DiscordClient(client);
             });
 
             services.AddScoped<TwitterFetcher>();
