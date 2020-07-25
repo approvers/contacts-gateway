@@ -1,7 +1,10 @@
-﻿namespace ContactsGateway.Models.Contacts
+﻿using Newtonsoft.Json;
+
+namespace ContactsGateway.Models.Contacts
 {
     public class GitHubContact : ContactBase
     {
+        [JsonProperty]
         public string Login { get; set; }
 
         public GitHubContact() : base()
