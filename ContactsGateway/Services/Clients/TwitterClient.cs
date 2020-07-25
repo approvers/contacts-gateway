@@ -6,7 +6,7 @@ namespace ContactsGateway.Services.Clients
 {
     public interface ITwitterClient
     {
-        Task<UserResponse> GetUserAsync(ulong id);
+        Task<User> GetUserAsync(ulong id);
     }
     
     public class TwitterClient : ITwitterClient
@@ -18,7 +18,7 @@ namespace ContactsGateway.Services.Clients
             _token = token;
         }
         
-        public Task<UserResponse> GetUserAsync(ulong id)
+        public async Task<User> GetUserAsync(ulong id)
         {
             if (id > long.MaxValue)
             {
@@ -28,7 +28,7 @@ namespace ContactsGateway.Services.Clients
                 );
             }
             
-            return _token.Users.ShowAsync((long) id);
+            return await _token.Users.ShowAsync((long) id);
         }
     }
 }
