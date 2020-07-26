@@ -1,8 +1,9 @@
-﻿namespace ContactsGateway.Models.Contacts
+﻿using ContactsGateway.Services.Caching;
+
+namespace ContactsGateway.Models.Contacts
 {
-    public interface IContact
+    public interface IContact : ICacheable
     {
-        ulong Id { get; set; }
         string Name { get; set; }
         string Url { get; set; }
     }
