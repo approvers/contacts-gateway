@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ContactsGateway.Models;
 using ContactsGateway.Services.Caching;
 using ContactsGateway.Services.Caching.Cache;
 
@@ -15,9 +16,9 @@ namespace ContactsGateway.Services.Fetchers
             _fetcher = fetcher;
         }
 
-        public Task<T> FetchAsync(ulong id)
+        public async Task<IEntry<T>> FetchAsync(ulong id)
         {
-            return _cache.HitOrUpdateAsync(id, _fetcher.FetchAsync);
+            return await _cache.HitOrUpdateAsync(id, _fetcher.FetchAsync);
         }
     }
 }

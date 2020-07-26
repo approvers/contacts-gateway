@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ContactsGateway.Models.Contacts;
+using ContactsGateway.Services;
 using ContactsGateway.Services.Caching.Cache;
 using ContactsGateway.Services.Caching.Storage;
 using ContactsGateway.Services.Clients;
@@ -67,6 +68,10 @@ namespace ContactsGateway
             services.AddScoped<TwitterFetcher>();
             services.AddScoped<DiscordFetcher>();
             services.AddScoped<GitHubFetcher>();
+
+            services.AddScoped<IEntryFactory<TwitterContact>, EntryFactory<TwitterContact>>();
+            services.AddScoped<IEntryFactory<GitHubContact>, EntryFactory<GitHubContact>>();
+            services.AddScoped<IEntryFactory<DiscordContact>, EntryFactory<DiscordContact>>();
 
             services.AddTransient<TimeoutCache<TwitterContact>.EntryFactory>();
             services.AddTransient<TimeoutCache<DiscordContact>.EntryFactory>();

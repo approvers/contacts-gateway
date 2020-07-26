@@ -1,7 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using ContactsGateway.Exceptions;
+using ContactsGateway.Models;
 using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Clients;
 
@@ -10,17 +10,21 @@ namespace ContactsGateway.Services.Fetchers
     public class GitHubFetcher : IFetcher<GitHubContact>
     {
         private readonly IGitHubClient _client;
+        private readonly IEntryFactory<GitHubContact> _entryFactory;
         
-        public GitHubFetcher(IGitHubClient client)
+        public GitHubFetcher(IGitHubClient client, IEntryFactory<GitHubContact> entryFactory)
         {
             _client = client;
+            _entryFactory = entryFactory;
         }
         
-        public async Task<GitHubContact> FetchAsync(ulong id)
+        public async Task<IEntry<GitHubContact>> FetchAsync(ulong id)
         {
             try
             {
-                return await _client.GetAsync<GitHubContact>($"user/{id}");
+                return _entryFactory.Create(
+                    await _client.GetAsync<GitHubContact>($"user/{id}")
+                );
             }
             catch (GitHubException e)
             {

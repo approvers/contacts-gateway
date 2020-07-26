@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ContactsGateway.Models;
 using ContactsGateway.Services.Caching.Storage;
 
 namespace ContactsGateway.Services.Caching.Cache
@@ -40,23 +41,21 @@ namespace ContactsGateway.Services.Caching.Cache
             _timeout = timeout;
         }
 
-        public async Task<T> HitOrUpdateAsync(ulong id, Func<ulong, Task<T>> updater)
+        public async Task<ICacheEntry<T>> HitOrUpdateAsync(ulong id, Func<ulong, Task<IEntry<T>>> updater)
         {
             if (await _storage.HasAsync(id))
             {
-                var entry = await _storage.RestoreAsync(id);
-                if (entry.CachedAt + _timeout > DateTimeOffset.Now)
+                var cached = await _storage.RestoreAsync(id);
+                if (cached.CachedAt + _timeout > DateTimeOffset.Now)
                 {
-                    return entry.Item;
+                    return cached;
                 }
             }
 
-            var item = await updater(id);
-            await _storage.StoreAsync(
-                _entryFactory.Create(item)
-            );
+            var entry = _entryFactory.Create((await updater(id)).Item);
+            await _storage.StoreAsync(entry);
 
-            return item;
+            return entry;
         }
     }
 }
