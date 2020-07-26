@@ -10,9 +10,9 @@ namespace ContactsGateway.Controllers
     [Route("[controller]")]
     public class TwitterController : Controller
     {
-        private readonly TwitterFetcher _fetcher;
+        private readonly IFetcher<TwitterContact> _fetcher;
         
-        public TwitterController(TwitterFetcher fetcher)
+        public TwitterController(IFetcher<TwitterContact> fetcher)
         {
             _fetcher = fetcher;
         }

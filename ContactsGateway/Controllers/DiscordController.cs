@@ -10,9 +10,9 @@ namespace ContactsGateway.Controllers
     [Route("[controller]")]
     public class DiscordController : Controller
     {
-        private readonly DiscordFetcher _fetcher;
+        private readonly IFetcher<DiscordContact> _fetcher;
         
-        public DiscordController(DiscordFetcher fetcher)
+        public DiscordController(IFetcher<DiscordContact> fetcher)
         {
             _fetcher = fetcher;
         }

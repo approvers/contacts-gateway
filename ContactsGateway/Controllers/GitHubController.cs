@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ContactsGateway.Exceptions;
 using ContactsGateway.Models.Contacts;
 using ContactsGateway.Services.Fetchers;
@@ -11,9 +10,9 @@ namespace ContactsGateway.Controllers
     [Route("[controller]")]
     public class GitHubController : Controller
     {
-        private readonly GitHubFetcher _fetcher;
+        private readonly IFetcher<GitHubContact> _fetcher;
         
-        public GitHubController(GitHubFetcher fetcher)
+        public GitHubController(IFetcher<GitHubContact> fetcher)
         {
             _fetcher = fetcher;
         }
