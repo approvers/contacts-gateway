@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ContactsGateway.DependencyInjection;
+using ContactsGateway.DependencyInjection.ContactServices;
 using ContactsGateway.Models.Contacts;
+using ContactsGateway.Services;
+using ContactsGateway.Services.Caching.Cache;
+using ContactsGateway.Services.Caching.Storage;
 using ContactsGateway.Services.Clients;
 using ContactsGateway.Services.Fetchers;
 using CoreTweet;
@@ -37,34 +42,20 @@ namespace ContactsGateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
-            services.AddScoped<ITwitterClient>(provider => new TwitterClient(
-                OAuth2.GetToken(
-                    Configuration["Twitter:ConsumerKey"],
-                    Configuration["Twitter:ConsumerSecret"]
-                )
-            ));
-
-            services.AddScoped<IGitHubClient>(provider => new GitHubClient(
-                new HttpClient(),
-                Configuration["GitHub:Token"]
-            ));
-
-            services.AddScoped<IDiscordClient>(provider =>
-            {
-                var client = new DiscordRestClient();
-
-                client
-                    .LoginAsync(Discord.TokenType.Bot, Configuration["Discord:Token"])
-                    .Wait();
-
-                return new DiscordClient(client);
-            });
-
-            services.AddScoped<TwitterFetcher>();
-            services.AddScoped<GitHubFetcher>();
-            services.AddScoped<DiscordFetcher>();
+            var timeout = TimeSpan.FromMilliseconds(Configuration.GetValue<ulong>("Cache:Timeout"));
+            
+            services
+                .AddTwitterServices(Configuration["Twitter:ConsumerKey"], Configuration["Twitter:ConsumerSecret"])
+                    .WithTimeoutCache<TwitterContact, InMemoryCacheStorage<TimeoutCache<TwitterContact>.Entry, TwitterContact>>(timeout)
+                    .Build()
+                .AddGitHubServices(Configuration["GitHub:Token"])
+                    .WithTimeoutCache<GitHubContact, InMemoryCacheStorage<TimeoutCache<GitHubContact>.Entry, GitHubContact>>(timeout)
+                    .Build()
+                .AddDiscordServices(Configuration["Discord:Token"])
+                    .WithTimeoutCache<DiscordContact, InMemoryCacheStorage<TimeoutCache<DiscordContact>.Entry, DiscordContact>>(timeout)
+                    .Build()
+                .AddControllers()
+            ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
