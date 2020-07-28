@@ -1,0 +1,12 @@
+﻿version: '3.8'
+
+services:
+  app:
+    build: ./ContactsGateway
+    environment:
+      - Twitter__ConsumerKey
+      - Twitter__ConsumerSecret
+      - GitHub__Token
+      - Discord__Token
+    ports:
+      - 8080:80
